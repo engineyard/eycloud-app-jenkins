@@ -1,0 +1,35 @@
+#!/bin/sh
+
+#
+# This uses the file /ey/api.json
+#
+# NOTE:
+#   Customer alterations of the API data is done *through the API*, this allows
+#   users to override defaults.
+#
+#
+# TODO: URI endpoint querying
+# TODO: component 'X'
+#
+# eyapi get component "redis" \
+#   string "bind" default 0.0.0.0 ...
+#
+
+eyapi()
+{
+  trace_filter eyapi || set -o xtrace
+
+  typeset _command
+
+  _command="$1" && shift || log fail "Usage: eyapi get '{namespace path}'"
+
+  case "${_command}" in
+    (get|read)
+      json get into "eyapi_variables" from "${json_file}" "$@"
+      ;;
+    (*)
+      log error "Unrecognized command: eyapi ${_command}"
+      ;;
+  esac
+}
+

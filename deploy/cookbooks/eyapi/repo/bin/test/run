@@ -1,0 +1,161 @@
+#!/bin/sh
+
+typeset json_path stdout stderr _stream
+
+json_path="${extension_path}/test/json"
+
+eyapi_fail() {
+  typeset _path _variable _expected _actual _code
+  _path="$1" ; _variable="$2" ; _expected="$3" ; _actual="$4" ; _code="$5"
+
+  if [[ "${_expected}" != "${_actual}" ]]
+  then
+    log "Expected path '${_path}' to yield value '${_expected}' but instead it yielded '${_actual}' for code:\n> ${_code}"
+  else
+    # Error Scenario
+    log "ERROR: path '${_path}' expected to yield '${_expected}' and yielded '${_actual}' for code:\n> ${_code}"
+    for _stream in stdout stderr
+    do
+      if [[ -s "/tmp/sm/assert/$$/${_stream}.log" ]]
+      then
+        log "${_stream}:"
+        # TODO: Have assert API log stdout/stderr to:
+        # /tmp/sm/assert/$$.stdout.log /tmp/sm/assert/$$.stderr.log
+        cat "/tmp/sm/assert/$$/${_stream}.log"
+      fi
+      file remove "/tmp/sm/assert/$$/${_stream}.log"
+    done
+  fi
+}
+
+log step "Empty."
+json_file="${json_path}/empty.json"
+if assert variable "namespace" is empty code 'eyapi get string namespace'
+then
+  log step success
+else
+  log step failure
+  eyapi_fail "namespace" "namespace" '' "${namespace}" 'eyapi get string namespace'
+fi
+
+log step "No namespace with Key that is empty."
+json_file="${json_path}/no_namespace_key_empty.json"
+if assert variable "key" is empty code 'eyapi get string key'
+then
+  log step success
+else
+  log step failure
+  eyapi_fail "key" "key" '' "${key}" 'eyapi get string key'
+fi
+
+log step "No namespace with Key that has a string value."
+json_file="${json_path}/no_namespace_key_string.json"
+if assert variable "key" equals 'value' code 'eyapi get string key'
+then
+  log step success
+else
+  log step failure
+  eyapi_fail "key" "key" 'value' "${key}" 'eyapi get string key'
+fi
+
+log step "No Namespace with Key that has an array value."
+json_file="${json_path}/no_namespace_key_array.json"
+if assert variable "key" equals 'one two three' code 'eyapi get array key'
+then
+  log step success
+else
+  log step failure
+  eyapi_fail "key" "key" 'one two three' "${key}" 'eyapi get array key'
+fi
+
+log step "Namespace with Key that is empty."
+json_file="${json_path}/namespace_key_empty.json"
+if assert variable "namespace_key" is empty code 'eyapi get string namespace/key'
+then
+  log step success
+else
+  log step failure
+  eyapi_fail "namespace/key" "namespace_key" '' "${key}" 'eyapi get string namespace/key'
+fi
+
+log step "Namespace with Key that has a string value."
+json_file="${json_path}/namespace_key_string.json"
+if assert variable "namespace_key" equals 'value' code 'eyapi get string namespace/key'
+then
+  log step success
+else
+  log step failure
+  eyapi_fail "namespace/key" "namespace_key" 'value' "${key}" 'eyapi get string namespace/key'
+fi
+
+log step "Namespace with Key that has an array value."
+json_file="${json_path}/namespace_key_array.json"
+if assert variable "namespace_key" equals 'one two three' code 'eyapi get array namespace/key'
+then
+  log step success
+else
+  log step failure
+  eyapi_fail "namespace/key" "namespace_key" 'one two three' "${namespace_key}" 'eyapi get array namespace/key'
+fi
+
+log step "Nested Namespace Empty."
+json_file="${json_path}/nested_namespace_key_array.json"
+if assert variable "nested_namespace_key" is empty code 'eyapi get string nested/namespace/key'
+then
+  log step success
+else
+  log step failure
+  eyapi_fail "key" "key" '' "${nested_namespace_key}" 'eyapi get string nested/namespace/key'
+fi
+
+log step "Nested Namespace with Key that is empty."
+json_file="${json_path}/nested_namespace_key_empty.json"
+if assert variable "nested_namespace_key" is empty code 'eyapi get string nested/namespace/key'
+then
+  log step success
+else
+  log step failure
+  eyapi_fail "nested/namespace/key" "nested_namespace_key" '' "${nested_namespace_key}" 'eyapi get string nested/namespace/key'
+fi
+
+log step "Nested Namespace with Key that has a string value."
+json_file="${json_path}/nested_namespace_key_string.json"
+if assert variable "nested_namespace_key" equals 'value' code 'eyapi get string nested/namespace/key'
+then
+  log step success
+else
+  log step failure
+  eyapi_fail "nested/namespace/key" "nested_namespace_key" 'value' "${nested_namespace_key}" 'eyapi get string nested/namespace/key'
+fi
+
+log step "Nested Namespace with Key that has an array value."
+json_file="${json_path}/nested_namespace_key_array.json"
+if assert variable "nested_namespace_key" equals 'one two three' code 'eyapi get array nested/namespace/key'
+then
+  log step success
+else
+  log step failure
+  eyapi_fail "nested/namespace/key" "nested_namespace_key" 'one two three' "${nested_namespace_key}" 'eyapi get array nested/namespace/key'
+fi
+
+log step "Default for a string"
+json_file="${json_path}/empty.json"
+if assert variable "default_string" equals 'w00t' code 'eyapi get string default/string default w00t'
+then
+  log step success
+else
+  log step failure
+  eyapi_fail "default/string" "default_string" 'w00t' "${default_array}" 'eyapi get string default/string default w00t'
+fi
+
+log step "Default for an array"
+json_file="${json_path}/empty.json"
+eyapi get array default/array default "a b c d" || true
+if assert variable "default_array" equals 'a b c d'
+then
+  log step success
+else
+  log step failure
+  eyapi_fail "default/array" "default_array" 'a b c d' "${default_array}" 'eyapi get array default/array default "a b c d"'
+fi
+

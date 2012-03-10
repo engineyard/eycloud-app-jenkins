@@ -1,0 +1,101 @@
+{
+   "id":34,
+   "description":"Software Distribution and Databases Team",
+   "customer":"eyinternal",
+   "applications":{
+      "todo":{
+         "type":"rails",
+         "keep_releases":"5",
+         "services":{
+            "jenkins":{
+               "resource":"jenkins",
+               "count":1,
+               "base_port":8082,
+               "mem_limit":null
+            },
+            "nginx":{
+               "resource":"nginx",
+               "count":1,
+               "base_port":null,
+               "mem_limit":null
+            },
+            "unicorn":{
+               "resource":"unicorn",
+               "count":3,
+               "base_port":null,
+               "mem_limit":120
+            },
+            "memcached":{
+               "resource":"memcached",
+               "count":1,
+               "base_port":11211,
+               "mem_limit":64
+            },
+            "resque":{
+               "resource":"resque",
+               "count":3,
+               "base_port":null,
+               "mem_limit":null
+            },
+            "redis":{
+               "resource":"redis",
+               "count":1,
+               "base_port":null,
+               "mem_limit":null
+            }
+         }
+      }
+   },
+   "slices":{
+      "20":{
+         "cpus":8,
+         "internal_ip":"10.153.28.114",
+         "node":"ut00-n99",
+         "ssh_port":"7000",
+         "id":20,
+         "ssh_ip":"216.178.232.88",
+         "mem":8096
+      }
+   },
+   "environments":{
+   },
+   "mongodb":{
+      "sharded":"false",
+      "config_nodes":[ ],
+      "durability":[ ],
+      "arbiter":[ ],
+      "shards":[ ],
+      "primary":[ ],
+      "nodes":[ ],
+      "secondary":[ ],
+      "orm":"mongoid",
+      "replsetname":"default"
+   },
+   "mysql":{
+   },
+   "monit":{
+   },
+   "nginx":{
+      "proxy":{
+      }
+   },
+   "system":{
+   },
+   "role":"production",
+   "thin":{
+   },
+   "repmgr":{
+   },
+   "memcached":{
+   },
+   "gentoo":{
+      "packages":{
+      }
+   },
+   "redis":{
+   },
+   "postgresql":{
+   },
+   "haproxy":{
+   }
+}

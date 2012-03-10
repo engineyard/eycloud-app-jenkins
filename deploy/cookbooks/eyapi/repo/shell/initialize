@@ -1,0 +1,11 @@
+#!/bin/sh
+
+typeset -gx json_file
+
+if file exists "/etc/ey/api.json"
+then
+  json_file="/etc/ey/api.json"
+else
+  json_file="${sm_path}/exts/active/eyapi/test/json/empty.json"
+fi
+
