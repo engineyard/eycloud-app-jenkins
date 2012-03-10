@@ -1,0 +1,78 @@
+#!/bin/sh
+
+# First we install java on the system if it is not installed yet.
+typeset -a versions
+versions=($(eix -n -c -I --pure-packages --only-names dev-java/sun-jdk))
+if array is empty versions
+then
+  emerge --usepkg --getbinpkg dev-java/sun-jdk
+fi
+
+eyapi get \
+  array "jenkins/plugins" \
+  string "jenkins/user" default "jenkins"
+
+eyapi get string "jenkins/home" \
+  default "/home/${jenkins_user}"
+
+typeset _path
+
+user create unless exists name "${jenkins_user}" \
+  shell "/bin/bash" home "/home/${jenkins_user}" group "${jenkins_user}"
+
+path create recursive "${jenkins_home}" \
+  owner "${jenkins_user}:${jenkins_user}"
+
+path enter "${jenkins_home}"
+
+paths create logs tmp plugins web-inf \
+  owner "${jenkins_user}:${jenkins_user}" \
+  mode 0755
+
+paths create war \
+  owner "${jenkins_user}:${jenkins_user}" \
+  mode 0700
+
+if ! file exists "${jenkins_home}/war/jenkins.war"
+then
+  eyapi get string "jenkins/war_url"
+  if variable is empty jenkins_war_url
+  then
+    config read defaults from jenkins key war_url into jenkins_war_url
+  fi
+  curl -L -k -s "${jenkins_war_url}" -o "${jenkins_home}/war/jenkins.war"
+fi
+
+file chown "${jenkins_user}:${jenkins_user}" "${jenkins_home}/war/jenkins.war"
+
+typeset plugin name version
+for plugin in ${jenkins_plugins[@]}
+do
+  name=${plugin%-*}
+  version=${plugin#${name}-}
+  if variable is nonempty version && ! file exists "${jenkins_home}/plugins/${plugin}.hpi"
+  then
+    # TODO: switch to using uri get API
+    eyapi get string "jenkins/plugins_base_url"
+    if variable is empty jenkins_plugins_base_url
+    then
+      config read defaults from jenkins key plugins_base_url into jenkins_plugins_base_url
+    fi
+    curl -L -k -s \
+      "${jenkins_plugins_base_url}/${plugin}/${version}/${plugin}.hpi" \
+      -o "${jenkins_home}/plugins/${plugin}.hpi"
+  fi
+done
+
+path chown ${jenkins_user}:${jenkins_user} recursively "${jenkins_home}/plugins"
+
+typeset key_file
+key_file="/home/${jenkins_user}/.ssh/id_rsa"
+path create ${key_file%/*}
+if ! file exists "${key_file}"
+then
+  ssh-keygen -t rsa -b 2048 -f ${key_file} -N '' -C 'Jenkins CI Server.'
+fi
+
+path chown ${jenkins_user}:${jenkins_user} recursively "/home/${jenkins_user}"
+

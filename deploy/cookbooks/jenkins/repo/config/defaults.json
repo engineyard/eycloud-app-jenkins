@@ -1,0 +1,40 @@
+{
+  "jenkins": {
+    "user":  "jenkins",
+    "home": "/home/jenkins",
+    "domains": "_",
+    "war_url": "http://mirrors.jenkins-ci.org/war/latest/jenkins.war",
+    "plugins_base_url": "http://mirrors.jenkins-ci.org/plugins",
+    "admin":  {
+      "user":  "admin",
+      "password":  "jenkins"
+    },
+    "http": {
+      "bind":  "127.0.0.1",
+      "port":  "8088"
+    },
+    "https": {
+      "bind": "127.0.0.1",
+      "port": ""
+    },
+    "keystore": {
+      "file":  "",
+      "password":  ""
+    },
+    "ssl": {
+      "file":  "/etc/pki/tls/certs/jenkins.pem",
+      "password":  ""
+    },
+    "ajp13": {
+      "port":  "8009",
+      "bind":  "127.0.0.1"
+    },
+    "admin": {
+      "user":  "admin"
+    },
+    "jenkins": {
+      "plugins": []
+    }
+  }
+}
+

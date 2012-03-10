@@ -1,0 +1,7 @@
+check process jenkins with pidfile /var/run/jenkins/jenkins.pid
+  start program = "/etc/init.d/jenkins start with timeout {{start_timeout}} seconds"
+  stop program = "/etc/init.d/jenkins stop"
+  if failed host {{http_bind}} port {{http_port}} then restart
+  if 5 restarts within 5 cycles then timeout
+  group jenkins
+

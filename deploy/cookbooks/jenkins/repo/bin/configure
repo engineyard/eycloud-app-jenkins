@@ -1,0 +1,83 @@
+#!/bin/sh
+
+eyapi get \
+  string "jenkins/domains" default "_" \
+  string "jenkins/user" default "jenkins"\
+  string "jenkins/admin/user" default "admin"\
+  string "jenkins/admin/password" default "jenkins"\
+  string "jenkins/http/bind" default "127.0.0.1"\
+  string "jenkins/http/port" default "8088" \
+  string "jenkins/https/bind" default "127.0.0.1"\
+  string "jenkins/https/port" default "" \
+  string "jenkins/ajp13/port" default "8009" \
+  string "jenkins/ajp13/bind" default "127.0.0.1" \
+  string "jenkins/max_perm_size" default "512M" \
+  string "jenkins/https/keystore/file" default ""\
+  string "jenkins/https/keystore/password" default "" \
+  string "jenkins/https/ssl/file" default "/etc/pki/tls/certs/jenkins.pem"\
+  string "jenkins/https/ssl/password" default "" \
+  string "jenkins/admin/user" default "admin" \
+
+eyapi get string "jenkins/home" default "/home/${jenkins_user}"
+
+# Notes:
+#   -1 to a port in order to disable.
+#   Flags are documented at:
+#     https://wiki.jenkins-ci.org/display/JENKINS/Starting+and+Accessing+Jenkins
+templates install "jenkins/init.d" \
+  to "/etc/init.d/jenkins" \
+  mode 0755 \
+  with \
+  home "${jenkins_home}" \
+  user "${jenkins_user}" \
+  admin_user "${jenkins_admin_user}" \
+  admin_password "${jenkins_admin_password}" \
+  http_bind "${jenkins_http_bind}" \
+  http_port "${jenkins_http_port}" \
+  https_bind "${jenkins_https_bind}" \
+  https_port "${jenkins_https_port}" \
+  ajp13_port "${jenkins_ajp13_port}" \
+  ajp13_bind "${jenkins_ajp13_bind}" \
+  max_perm_size "${jenkins_max_perm_size}" \
+  https_keystore_file "${jenkins_https_keystore_file}" \
+  https_keystore_password "${jenkins_https_keystore_password}"
+
+templates install "jenkins/monitrc" \
+  to "/etc/monit.d/jenkins.monitrc" \
+  mode 0755 \
+  with \
+  http_bind "${jenkins_http_bind}" \
+  http_port "${jenkins_http_port}" \
+  start_timeout 30
+
+paths create recursively \
+  "/etc/nginx/servers" "/var/log/jenkins" "/var/run/jenkins"
+
+typeset nginx_server_file
+if variable is nonempty jenkins_https_ssl_file
+then
+  nginx_server_file="jenkins/nginx.server.ssl.conf"
+else
+  nginx_server_file="jenkins/nginx.server.conf"
+fi
+
+templates install "${nginx_server_file}" \
+  to "/etc/nginx/servers/jenkins.conf" \
+  mode 0644 \
+  with \
+  user "${jenkins_user}" \
+  home "${jenkins_home}" \
+  http_bind "${jenkins_http_bind}" \
+  http_port "${jenkins_http_port}" \
+  domains "${jenkins_domains}" \
+  ssl_file "${jenkins_https_ssl_file}" \
+  ssl_password "${jenkins_https_ssl_password}"
+
+path chown ${jenkins_user}:${jenkins_user} recursively \
+  "/var/log/jenkins" "/var/run/jenkins"
+
+if file is executable /etc/init.d/nginx
+then
+  /etc/init.d/nginx restart
+fi
+

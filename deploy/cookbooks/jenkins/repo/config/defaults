@@ -1,0 +1,2 @@
+war_url=http://mirrors.jenkins-ci.org/war/latest/jenkins.war
+plugins_base_url=http://mirrors.jenkins-ci.org/plugins

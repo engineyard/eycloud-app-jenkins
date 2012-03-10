@@ -1,0 +1,4 @@
+#!/bin/sh
+
+user is root || log error "'sm jenkins' commands must be run as root."
+

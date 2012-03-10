@@ -1,0 +1,63 @@
+#!/sbin/runscript
+
+# Gentoo init script for Jenkins CI Server
+
+service="jenkins"
+service_description="Jenkins CI Server"
+pid_file="/var/run/jenkins/jenkins.pid"
+jenkins_home="{{home}}"
+user="{{user}}"
+HOME="/home/${user}"
+USER="${user}"
+java_binary=/usr/bin/java
+flags=(
+    -Djava.io.tmpdir="${jenkins_home}/tmp"
+    -jar "${jenkins_home}/war/jenkins.war"
+    --argumentsRealm.passwd.{{admin_user}}={{admin_password}}
+    --argumentsRealm.roles.{{admin_user}}=admin
+    --httpPort="{{http_port}}"
+    --httpListenAddress="{{http_bind}}"
+    --XX:MaxPermSize={{max_perm_size}}    
+)
+#--webroot="${jenkins_home}/web-inf"
+
+if [[ -n "{{ajp13_port}}" ]]
+then
+  flags+=(
+  --ajp13Port="{{ajp13_port}}"
+  --ajpListenAddress=="{{ajp13_bind}}"
+  )
+fi
+
+if [[ -n "{{https_port}}" && -s "{{https_keystore_file}}" ]]
+then
+  flags+=(
+    --httpsPort={{https_port}}
+    --httpsListenAddress={{https_bind}}
+    --httpsKeyStore="{{https_keystore_file}}"
+    --httpsKeyStorePassword="{{https_keystore_password}}"
+    --ajp13Port="-1"
+  )
+fi
+
+start_command="$java_binary -- ${flags[*]}"
+export jenkins_home HOME USER
+
+depend() {
+  : # Does not depend on other services.
+}
+
+start() {
+  ebegin "Starting ${service_description}"
+  start-stop-daemon -b --start --make-pidfile --pidfile ${pid_file} \
+    --chuid $user --exec ${start_command} &> "/var/log/jenkins/jenkins.log"
+  eend $?
+}
+
+stop() {
+  ebegin "Stopping ${service_description}"
+  start-stop-daemon --signal TERM --stop --quiet --pidfile ${pid_file}
+  rm -f ${pid_file}
+  eend $?
+}
+

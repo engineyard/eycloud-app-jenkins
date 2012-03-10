@@ -1,0 +1,8 @@
+#!/bin/sh
+
+includes api/service
+
+service_pid_file="/var/run/jenkins/jenkins.pid"
+
+service status
+

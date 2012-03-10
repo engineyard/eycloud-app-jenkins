@@ -1,0 +1,40 @@
+upstream jenkins {
+  server {{http_bind}}:{{http_port}};
+}
+
+# Redirect all HTTP requests to HTTPS.
+server {
+  listen 80;
+  server_name {{domains}};
+  location / {
+    rewrite ^ https://$server$request_uri? permanent;
+  }
+}
+
+# Proxy HTTPS requests on jenkins.example.com to localhost jenkins server.
+server {
+  listen 443;
+  server_name {{domains}};
+
+  ssl_on;
+  ssl_certificate {{ssl_file}};
+  ssl_certificate_key {{ssl_password}};
+  ssl_session_cache shared:SSL:1m;
+  ssl_session_timeout 5m;
+
+  # Only allow GET, HEAD, and POST requests.
+  if ($request_method !~ ^(GET|HEAD|POST)$ ) {
+    return 444;
+  }
+
+  location / {
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Host $http_host;
+    proxy_next_upstream error;
+    proxy_pass http://jenkins_ssl;
+    proxy_redirect http://$server/ https://$server/;
+  }
+}
+

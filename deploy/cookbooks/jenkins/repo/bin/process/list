@@ -1,0 +1,5 @@
+#!/bin/sh
+
+ps auxww | head -1
+
+exec ps auxww | grep -v " $$ " | grep '[j]enkins'
