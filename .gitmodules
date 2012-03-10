@@ -1,6 +1,0 @@
-[submodule "deploy/cookbooks/jenkins/repo"]
-	path = deploy/cookbooks/jenkins/repo
-	url = git@github.com:engineyard/sm_jenkins.git
-[submodule "deploy/cookbooks/eyapi/repo"]
-	path = deploy/cookbooks/eyapi/repo
-	url = git@github.com:engineyard/sm_eyapi.git
