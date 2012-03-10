@@ -1,1 +1,1 @@
-sm_jenkins_uri('/tmp/ey-recipes/sm_jenkins')
+sm_jenkins_uri(File.expand_path('../../repo', __FILE__))
