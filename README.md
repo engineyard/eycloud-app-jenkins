@@ -4,7 +4,7 @@
 ## How this was created
 
     gem install engineyard-recipes
-    ey-recipes init -on-deploy --sm
+    ey-recipes init --on-deploy --sm
     ey-recipes sm git@github.com:engineyard/sm_eyapi.git -n eyapi
     ey-recipes sm git@github.com:engineyard/sm_jenkins.git install configure restart -n jenkins
 
