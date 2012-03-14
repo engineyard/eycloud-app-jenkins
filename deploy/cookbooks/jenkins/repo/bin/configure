@@ -14,6 +14,7 @@ eyapi get \
   string "jenkins/max_perm_size" default "512M" \
   string "jenkins/https/keystore/file" default ""\
   string "jenkins/https/keystore/password" default "" \
+  string "jenkins/https/enable" default "false" \
   string "jenkins/https/ssl/file" default "/etc/pki/tls/certs/jenkins.pem"\
   string "jenkins/https/ssl/password" default "" \
   string "jenkins/admin/user" default "admin" \
@@ -54,7 +55,7 @@ paths create recursively \
   "/etc/nginx/servers" "/var/log/jenkins" "/var/run/jenkins"
 
 typeset nginx_server_file
-if variable is nonempty jenkins_https_ssl_file
+if string "${jenkins_https_enable}" contains "true"
 then
   nginx_server_file="jenkins/nginx.server.ssl.conf"
 else
