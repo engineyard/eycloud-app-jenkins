@@ -38,7 +38,7 @@ then
   eyapi get string "jenkins/war_url"
   if variable is empty jenkins_war_url
   then
-    config read defaults from jenkins key war_url into jenkins_war_url
+    config read file defaults from jenkins key war_url into jenkins_war_url
   fi
   curl -L -k -s "${jenkins_war_url}" -o "${jenkins_home}/war/jenkins.war"
 fi
