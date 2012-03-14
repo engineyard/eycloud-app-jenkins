@@ -17,15 +17,16 @@ flags=(
     --argumentsRealm.roles.{{admin_user}}=admin
     --httpPort="{{http_port}}"
     --httpListenAddress="{{http_bind}}"
-    --XX:MaxPermSize={{max_perm_size}}    
+    # FIXME --XX:MaxPermSize={{max_perm_size}}    
 )
+
 #--webroot="${jenkins_home}/web-inf"
 
 if [[ -n "{{ajp13_port}}" ]]
 then
   flags+=(
   --ajp13Port="{{ajp13_port}}"
-  --ajpListenAddress=="{{ajp13_bind}}"
+  --ajp13ListenAddress="{{ajp13_bind}}"
   )
 fi
 
