@@ -55,7 +55,7 @@ paths create recursively \
   "/etc/nginx/servers" "/var/log/jenkins" "/var/run/jenkins"
 
 typeset nginx_server_file
-if string "${jenkins_https_enable}" contains "true"
+if string contains "${jenkins_https_enable}" "true"
 then
   nginx_server_file="jenkins/nginx.server.ssl.conf"
 else
