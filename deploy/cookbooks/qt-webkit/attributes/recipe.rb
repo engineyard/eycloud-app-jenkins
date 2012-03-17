@@ -1,1 +1,1 @@
-qt_webkit_version('4.4.2')
+qt_webkit_version('4.7.3')
