@@ -20,5 +20,6 @@ When the instance finished booting and deploying you will have Jenkins running!
     ey-recipes init --on-deploy --sm
     ey-recipes sm git@github.com:engineyard/sm_eyapi.git -n eyapi
     ey-recipes sm git@github.com:engineyard/sm_jenkins.git install configure restart -n jenkins
+    ey-recipes recipe qt-webkit -p x11-libs/qt-webkit -v 4.4.2 -u
 
 When the project is launched on Engine Yard Cloud the cookbooks are automatically run and Jenkins is setup!
