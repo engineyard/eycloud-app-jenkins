@@ -17,6 +17,7 @@ When the instance finished booting and deploying you will have Jenkins running!
 ## Other packages installed
 
 * qt-webkit 4.7.3 - as required for [capybara-webkit](https://github.com/thoughtbot/capybara-webkit)
+* xorg-server 1.3 - headless X 
 
 ## How this was created
 
