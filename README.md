@@ -4,15 +4,29 @@
 ## Getting Started
 
 1. Go to the [EY Cloud dashboard](https://cloud.engineyard.com/)
-2. Click "Add an Application"
-3. Git Repository URI is `git://github.com/engineyard/eycloud-app-jenkins.git`
-4. Application Type is `rack`
-5. Click "Create Application"
-6. Environment Name is `jenkins` (or anything you like)
-7. Click "Create Environment"
-8. Click "Boot This Configuration"
+1. Click "Add an Application"
+1. Git Repository URI is `git://github.com/engineyard/eycloud-app-jenkins.git`
+1. Application Type is `rack`
+1. Click "Create Application"
+1. Environment Name is `jenkins` (or anything you like)
+1. Click "Create Environment"
+1. Click "Boot This Configuration"
 
 When the instance finished booting and deploying you will have Jenkins running!
+
+### xvfb
+
+`xvfb-run` was installed in `/engineyard/bin` and is the script that you will actually execute in Jenkins.
+
+    #!/bin/bash
+    export RAILS_ENV=test
+    cp /data/jenkins/shared/config/database.yml config/
+    sed -i 's/jenkins/test/' config/database.yml
+    sed -i 's/production:/test:/' config/database.yml
+    bundle --deployment
+    /engineyard/bin/xvfb-run -s "-screen 0 1024x768x24" bundle exec rake db:create db:migrate spec --trace
+
+Some `sed` was necessary to prepare the `database.yml` file for a test database. The first `sed` renames the database from whatever you named this CI application to test. The second `sed` just mods the existing production environment section to be test. Production is the EY default.
 
 ## Other packages installed
 
