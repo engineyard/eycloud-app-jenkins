@@ -18,6 +18,12 @@ When the instance finished booting and deploying you will have Jenkins running!
 
 `xvfb-run` was installed in `/engineyard/bin` and is the script that you will actually execute in Jenkins.
 
+The hello world example:
+
+    $ /engineyard/bin/xvfb-run -s "-screen 0 1024x768x24" echo "Hello world"
+
+You'll want to use the following code chunk in your Jenkins jobs:
+
     #!/bin/bash
     export RAILS_ENV=test
     cp /data/jenkins/shared/config/database.yml config/
@@ -25,6 +31,7 @@ When the instance finished booting and deploying you will have Jenkins running!
     sed -i 's/production:/test:/' config/database.yml
     bundle --deployment
     /engineyard/bin/xvfb-run -s "-screen 0 1024x768x24" bundle exec rake db:create db:migrate spec --trace
+    
 
 Some `sed` was necessary to prepare the `database.yml` file for a test database. The first `sed` renames the database from whatever you named this CI application to test. The second `sed` just mods the existing production environment section to be test. Production is the EY default.
 
