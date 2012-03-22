@@ -19,6 +19,9 @@ GEM
       treetop (~> 1.4.9)
       uuidtools
     erubis (2.7.0)
+    eycloud-helper-common (0.2.1)
+      chef (~> 0.10)
+      yajl-ruby
     highline (1.6.11)
     json (1.6.1)
     mime-types (1.18)
@@ -57,5 +60,6 @@ PLATFORMS
 
 DEPENDENCIES
   chef
+  eycloud-helper-common
   rack
   rake
