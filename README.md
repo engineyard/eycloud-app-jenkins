@@ -29,6 +29,8 @@ gem install engineyard-dns
 ey-dns assign ci.myapp.com -e jenkins -a jenkins
 ```
 
+Now http://ci.myapp.com will map to your Jenkins installation!
+
 ### xvfb
 
 `xvfb-run` was installed in `/engineyard/bin` and is the script that you will actually execute in Jenkins.
@@ -55,12 +57,3 @@ Some `sed` was necessary to prepare the `database.yml` file for a test database.
 * qt-webkit 4.7.3 - as required for [capybara-webkit](https://github.com/thoughtbot/capybara-webkit)
 * xorg-server 1.3 - headless X 
 
-## How this was created
-
-    gem install engineyard-recipes
-    ey-recipes init --on-deploy --sm # todo - need the emerge package here
-    ey-recipes sm git@github.com:engineyard/sm_eyapi.git -n eyapi
-    ey-recipes sm git@github.com:engineyard/sm_jenkins.git install configure restart -n jenkins
-    ey-recipes package qt-webkit -p x11-libs/qt-webkit -v 4.4.2 -u
-
-When the project is launched on Engine Yard Cloud the cookbooks are automatically run and Jenkins is setup!
