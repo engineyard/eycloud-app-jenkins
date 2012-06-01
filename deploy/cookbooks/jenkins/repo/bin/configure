@@ -74,6 +74,9 @@ templates install "${nginx_server_file}" \
   ssl_file "${jenkins_https_ssl_file}" \
   ssl_password "${jenkins_https_ssl_password}"
 
+# TODO only if not "git config user.email"
+sudo su ${jenkins_user} -c "git config --global user.email 'you@example.com' && git config --global user.name 'You are Special'"
+
 path chown ${jenkins_user}:${jenkins_user} recursively \
   "/var/log/jenkins" "/var/run/jenkins"
 
