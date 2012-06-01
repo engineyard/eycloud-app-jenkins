@@ -3,14 +3,18 @@
 
 ## Getting Started
 
-1. Go to the [EY Cloud dashboard](https://cloud.engineyard.com/)
-1. Click "Add an Application"
-1. Git Repository URI is `git://github.com/engineyard/eycloud-app-jenkins.git`
-1. Application Type is `rack`
-1. Click "Create Application"
-1. Environment Name is `jenkins` (or anything you like)
-1. Click "Create Environment"
-1. Click "Boot This Configuration"
+You can boot Jenkins into a new Engine Yard Cloud environment with two simple commands:
+
+```
+gem install ey_cli
+ey_cli create_app --git git://github.com/engineyard/eycloud-app-jenkins.git --name jenkins --env_name jenkins --type rack
+```
+
+When the environment finishes booting, you can view it with:
+
+```
+ey launch -e jenkins -a jenkins
+```
 
 When the instance finished booting and deploying you will have Jenkins running!
 
