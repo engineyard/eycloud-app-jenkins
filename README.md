@@ -18,6 +18,17 @@ ey launch -e jenkins -a jenkins
 
 When the instance finished booting and deploying you will have Jenkins running!
 
+### Custom domain name
+
+If you have a custom domain name that you want for Jenkins, consider using [ey-dns](https://github.com/engineyard/engineyard-dns) to setup it up.
+
+Example usage:
+
+```
+gem install engineyard-dns
+ey-dns assign ci.myapp.com -e jenkins -a jenkins
+```
+
 ### xvfb
 
 `xvfb-run` was installed in `/engineyard/bin` and is the script that you will actually execute in Jenkins.
