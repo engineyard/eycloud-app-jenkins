@@ -21,8 +21,8 @@ define :update_file, :action => :append do
         File.open(filepath, mode) do |f|
           f.puts params[:body]
         end
-        not_if(params[:not_if]) if params[:not_if]
       end
+      not_if(params[:not_if]) if params[:not_if]
     end
 
   when :truncate
