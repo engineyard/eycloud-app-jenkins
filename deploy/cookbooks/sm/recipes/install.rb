@@ -1,4 +1,4 @@
-ey_cloud_report "Installing SM framework"
+# ey_cloud_report "Installing SM framework"
 
 execute "install-sm" do
   command <<-SHELL

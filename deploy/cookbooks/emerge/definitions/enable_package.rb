@@ -4,17 +4,15 @@ define :enable_package, :version => nil do
   full_name = name + ("-#{version}" if version)
   unmask = params[:unmask] || false
 
-  update_file "local portage package.keywords" do
-    path "/etc/portage/package.keywords/local"
-    body "=#{full_name}"
+  execute "local portage package.keywords #{full_name}" do
+    command "echo '=#{full_name}' >> /etc/portage/package.keywords/local"
     not_if "grep '=#{full_name}' /etc/portage/package.keywords/local"
   end
   
   if unmask
-    update_file "local portage package.unmask" do
-      path "/etc/portage/package.unmask/local"
-      body "=#{full_name}"
-      not_if "grep '=#{full_name}' /etc/portage/package.keywords/local"
+    execute "unmask portage package.keywords #{full_name}" do
+      command "echo '=#{full_name}' >> /etc/portage/package.unmask/local"
+      not_if "grep '=#{full_name}' /etc/portage/package.unmask/local"
     end
   end
 end
